@@ -2,6 +2,13 @@
 .gradle/
 **/build/
 local.properties
+secrets.properties
+*.keystore
+*.jks
+*.pem
+.env
+.env.*
+!.env.example
 
 # IDE metadata
 .idea/
