@@ -9,6 +9,8 @@ local.properties
 
 # Local staging and generated archives
 .theme-stage/
+.codex-capture-worker/
+.worker-home-preview/
 *.zip
 
 # Test captures and generated visual artifacts
@@ -19,3 +21,6 @@ local.properties
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Temporary source exports
+*.log
