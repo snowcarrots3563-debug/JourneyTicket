@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>旅程记录 · 0.5.2 UI 方向 Demo</title>
+  <style>
+    :root { --paper:#f7f8fa; --surface:#fff; --ink:#111827; --muted:#687386; --line:#e6e9ee; --accent:#2f66b0; --accent-soft:#eaf1fb; --shadow:0 10px 30px rgba(24,36,55,.08); --radius:24px; }
+    [data-theme="night"] { --paper:#101318; --surface:#181d25; --ink:#f3f5f8; --muted:#a9b2c0; --line:#2b3440; --accent:#8db7ef; --accent-soft:#1d3049; --shadow:0 10px 30px rgba(0,0,0,.25); }
+    body[data-direction="blueprint"] { --accent:#386fae; --accent-soft:#e4eef9; --line:#d5e0ec; --radius:14px; --shadow:0 1px 0 rgba(35,75,112,.08); }
+    body[data-direction="blueprint"] .phone-wrap { background:#d5e0ec; }
+    body[data-direction="blueprint"] .phone { border-radius:16px; }
+    body[data-direction="blueprint"] .summary { background:#e4eef9; color:#173452; border:1px solid #c5d8eb; border-radius:14px; }
+    body[data-direction="blueprint"] .summary-top, body[data-direction="blueprint"] .summary em { color:#56718e; }
+    body[data-direction="blueprint"] .action { border-radius:12px; box-shadow:none; }
+    body[data-direction="blueprint"] .trip { border-radius:10px; box-shadow:none; }
+    body[data-direction="blueprint"] .trip-rail { width:4px; }
+    body[data-direction="night"] .phone-wrap { background:#0c1017; }
+    body[data-direction="night"] .phone { border-color:#252d38; border-radius:18px; }
+    body[data-direction="night"] .summary { background:#242d3a; border:1px solid #354354; }
+    body[data-direction="night"] .action { background:#171d25; border-color:#2c3745; box-shadow:none; }
+    body[data-direction="night"] .action.primary { background:#8db7ef; color:#0d1724; border-color:#8db7ef; }
+    body[data-direction="night"] .trip { background:#171d25; border-color:#2c3745; }
+    body[data-direction="night"] .tab[aria-selected="true"] { background:#8db7ef; color:#0d1724; border-color:#8db7ef; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:#e9edf2; color:var(--ink); font-family:Inter,"Noto Sans SC","PingFang SC",system-ui,sans-serif; }
+    .shell { max-width:1180px; margin:0 auto; padding:52px 28px 72px; }
+    .intro { max-width:760px; margin-bottom:30px; }
+    .eyebrow { color:var(--accent); font:600 12px/1.2 ui-monospace,SFMono-Regular,monospace; letter-spacing:.14em; text-transform:uppercase; }
+    h1 { margin:12px 0 10px; font-size:clamp(32px,5vw,58px); letter-spacing:-.055em; line-height:1.02; }
+    .intro p { margin:0; color:#64748b; font-size:16px; line-height:1.7; }
+    .direction-tabs { display:flex; gap:8px; flex-wrap:wrap; margin:26px 0 22px; }
+    button { font:inherit; cursor:pointer; border:0; }
+    .tab { min-height:44px; padding:0 16px; color:#536174; background:#fff; border:1px solid #dfe4ea; border-radius:999px; }
+    .tab[aria-selected="true"] { color:#fff; background:#1f2937; border-color:#1f2937; }
+    .workspace { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr); gap:24px; align-items:start; }
+    .brief, .phone { background:var(--surface); border:1px solid var(--line); border-radius:28px; box-shadow:var(--shadow); }
+    .brief { padding:28px; }
+    .brief h2 { margin:0 0 7px; font-size:24px; letter-spacing:-.03em; }
+    .brief .lede { color:var(--muted); line-height:1.6; margin:0 0 24px; }
+    .tokens { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:18px 0 26px; }
+    .token { padding:13px; border:1px solid var(--line); border-radius:16px; background:color-mix(in srgb,var(--surface) 88%,var(--accent-soft)); }
+    .swatch { width:100%; height:28px; border-radius:9px; margin-bottom:8px; background:var(--swatch); }
+    .token b { display:block; font-size:13px; }
+    .token small { color:var(--muted); }
+    .rules { display:grid; gap:12px; margin-top:10px; }
+    .rule { display:grid; grid-template-columns:92px 1fr; gap:12px; padding:12px 0; border-top:1px solid var(--line); }
+    .rule b { font-size:13px; }
+    .rule span { color:var(--muted); font-size:13px; line-height:1.55; }
+    .phone-wrap { display:flex; justify-content:center; padding:22px; background:#dfe5eb; border-radius:30px; }
+    .phone { width:min(100%,390px); min-height:720px; overflow:hidden; background:var(--paper); border-color:transparent; }
+    .status { height:36px; padding:12px 22px 0; display:flex; justify-content:space-between; color:var(--muted); font:600 12px ui-monospace,monospace; }
+    .phone-main { padding:30px 20px 24px; }
+    .phone-head { display:flex; justify-content:space-between; align-items:end; margin-bottom:28px; }
+    .phone-head h3 { margin:0; font-size:34px; letter-spacing:-.06em; }
+    .phone-head span { color:var(--accent); font-size:13px; }
+    .summary { padding:20px; border-radius:22px; background:var(--ink); color:var(--paper); margin-bottom:18px; }
+    .summary-top { display:flex; justify-content:space-between; color:#b8c2d0; font-size:12px; }
+    .summary strong { display:block; font-size:36px; letter-spacing:-.06em; margin:8px 0 2px; }
+    .summary em { color:#cbd5e1; font-size:13px; font-style:normal; }
+    .actions { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px; }
+    .action { min-height:104px; padding:16px; text-align:left; border-radius:20px; background:var(--surface); color:var(--ink); border:1px solid var(--line); box-shadow:0 5px 18px rgba(0,0,0,.04); }
+    .action.primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .action b { display:block; margin-top:18px; font-size:17px; }
+    .action small { display:block; margin-top:4px; opacity:.72; line-height:1.4; }
+    .section-label { margin:22px 2px 10px; color:var(--muted); font-size:12px; letter-spacing:.08em; }
+    .trip { display:grid; grid-template-columns:5px 1fr; overflow:hidden; background:var(--surface); border:1px solid var(--line); border-radius:18px; }
+    .trip-rail { background:var(--accent); }
+    .trip-body { padding:15px 16px; }
+    .trip-meta { display:flex; justify-content:space-between; color:var(--muted); font-size:12px; }
+    .route { display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:end; margin-top:10px; }
+    .route b { font-size:22px; letter-spacing:-.04em; }
+    .route span { text-align:center; color:var(--accent); font:600 13px ui-monospace,monospace; }
+    .route b:last-child { text-align:right; }
+    .bottom-nav { display:flex; justify-content:space-around; padding:15px 8px 18px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+    .bottom-nav b { color:var(--accent); }
+    .switch { float:right; min-height:44px; padding:0 13px; border-radius:999px; background:var(--accent-soft); color:var(--accent); }
+    @media (max-width:860px) { .shell{padding:32px 16px 48px}.workspace{grid-template-columns:1fr}.brief{order:2}.phone-wrap{order:1}.phone{min-height:680px} }
+  </style>
+</head>
+<body data-theme="day">
+  <main class="shell">
+    <section class="intro">
+      <div class="eyebrow">JOURNEY RECORD · UI DIRECTIONS</div>
+      <h1>把每一段车程，<br>留成一页干净的记忆。</h1>
+      <p>0.5.2 外层 UI 视觉方向 Demo。票面图片与票面内容保持冻结；这里只重构识图、确认、旅途、首页和设置的使用体验。</p>
+    </section>
+    <div class="direction-tabs" role="tablist" aria-label="视觉方向">
+      <button class="tab" aria-selected="true" data-direction="paper">A · 白昼纸张</button>
+      <button class="tab" aria-selected="false" data-direction="blueprint">B · 蓝图档案</button>
+      <button class="tab" aria-selected="false" data-direction="night">C · 夜航黑盒</button>
+      <button class="switch" id="themeToggle" type="button" aria-label="切换深色模式">切换深色预览</button>
+    </div>
+    <section class="workspace">
+      <article class="brief" id="brief">
+        <div class="eyebrow" id="directionTag">DIRECTION A</div>
+        <h2 id="directionTitle">白昼纸张 · 留白优先</h2>
+        <p class="lede" id="directionLead">以纸张、车站指示牌和行程单为灵感。视觉安静，信息清晰，首页同时照顾“马上识图”和“回看旅途”。</p>
+        <div class="tokens">
+          <div class="token"><div class="swatch" style="--swatch:#f7f8fa"></div><b>Canvas</b><small>#F7F8FA · 页面底色</small></div>
+          <div class="token"><div class="swatch" style="--swatch:#111827"></div><b>Ink</b><small>#111827 · 正文与统计</small></div>
+          <div class="token"><div class="swatch" style="--swatch:#2f66b0"></div><b>Rail blue</b><small>#2F66B0 · 唯一强调色</small></div>
+          <div class="token"><div class="swatch" style="--swatch:#e6e9ee"></div><b>Divider</b><small>#E6E9EE · 分组边界</small></div>
+        </div>
+        <div class="rules">
+          <div class="rule"><b>信息架构</b><span>首页 = 快速识图 + 最近旅程；旅途 = 按日期回看；设置 = AI 配置、显示与隐私。</span></div>
+          <div class="rule"><b>字体</b><span>Android 系统无衬线为正文；车次、时间、统计使用等宽数字，建立交通工具感。</span></div>
+          <div class="rule"><b>节奏</b><span>4pt 基线，屏幕边距 20pt，卡片间距 12–16pt；圆角 16/20/24，不使用大面积渐变。</span></div>
+          <div class="rule"><b>交互</b><span>主要按钮至少 48dp；次要动作有明确 pressed 状态；识图、保存和错误都给出就地反馈。</span></div>
+          <div class="rule"><b>无障碍</b><span>动态字体不截断；正文对比度达到 WCAG AA；图标按钮有语义标签；支持系统深色与减少动效。</span></div>
+        </div>
+      </article>
+      <div class="phone-wrap">
+        <div class="phone" aria-label="首页移动端预览">
+          <div class="status"><span>9:41</span><span>▴ 5G　▮ 100%</span></div>
+          <div class="phone-main">
+            <div class="phone-head"><h3>旅程记录</h3><span>设置</span></div>
+            <div class="summary"><div class="summary-top"><span>今年的移动轨迹</span><span>›</span></div><strong>12</strong><em>趟旅程　·　1,248 公里</em></div>
+            <div class="actions"><button class="action primary"><span>＋</span><b>识别车票</b><small>从图片提取行程</small></button><button class="action"><span>⌁</span><b>手动记录</b><small>补充一段旅途</small></button></div>
+            <div class="section-label">最近旅程</div>
+            <div class="trip"><div class="trip-rail"></div><div class="trip-body"><div class="trip-meta"><span>2026.08.24</span><span>已完成</span></div><div class="route"><b>福鼎</b><span>D3219<br>09:42</span><b>宁德</b></div></div></div>
+            <div class="section-label">设计提示</div>
+            <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:0">白底优先；深色模式只反转外层界面。纪念票仍按已封存的票面设计渲染。</p>
+          </div>
+          <nav class="bottom-nav"><b>首页</b><span>旅途</span><span>设置</span></nav>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const directions = {
+      paper:{tag:'DIRECTION A',title:'白昼纸张 · 留白优先',lead:'以纸张、车站指示牌和行程单为灵感。视觉安静，信息清晰，首页同时照顾“马上识图”和“回看旅途”。'},
+      blueprint:{tag:'DIRECTION B',title:'蓝图档案 · 信息成层',lead:'以铁路蓝图和旅程档案为灵感。让统计、日期和路线形成清楚的阅读层级，适合频繁回看与整理。'},
+      night:{tag:'DIRECTION C',title:'夜航黑盒 · 深色优先',lead:'以夜间列车和站台电子牌为灵感。黑色只承担环境，蓝色只标记行动，适合低光环境下快速操作。'}
+    };
+    document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected','false'));
+      tab.setAttribute('aria-selected','true');
+      const d=directions[tab.dataset.direction];
+      directionTag.textContent=d.tag; directionTitle.textContent=d.title; directionLead.textContent=d.lead;
+      document.body.dataset.direction=tab.dataset.direction;
+      document.body.dataset.theme=tab.dataset.direction==='night'?'night':'day';
+    }));
+    themeToggle.addEventListener('click',()=>{document.body.dataset.theme=document.body.dataset.theme==='night'?'day':'night'});
+  </script>
+</body>
+</html>

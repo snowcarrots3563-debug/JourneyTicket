@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>旅程记录 · 票面结构 Demo</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 28px; background: #eef1f4; color: #291e1e; font-family: "Microsoft YaHei", "PingFang SC", sans-serif; }
+    h1, .note, .stage, .disclaimer { max-width: 980px; margin-right: auto; margin-left: auto; }
+    h1 { margin-top: 0; margin-bottom: 8px; font-size: 24px; }
+    .note, .disclaimer { color: #667085; font-size: 14px; line-height: 1.7; }
+    .note { margin-top: 0; margin-bottom: 22px; }
+    .stage { overflow: auto; padding: 28px; background: #dfe6ed; border-radius: 16px; }
+    .ticket-list { display: grid; gap: 28px; }
+    .ticket { position: relative; width: 850px; height: 540px; overflow: hidden; display: grid; grid-template-rows: 48px 120px 112px 182px 54px; padding: 28px 40px 0; border-radius: 16px; background: linear-gradient(#a4d3db 0%, #d7e8ed 62%, #bfdde1 100%); box-shadow: 0 10px 24px #75818b55; font-family: "SimSun", "宋体", "Songti SC", serif; font-weight: 600; }
+    .meta { display: flex; align-items: start; justify-content: space-between; font-size: 35px; line-height: 1; }
+    .serial { color: #e35757; }
+    .gate { color: #291e1e; }
+    .route { display: grid; grid-template-columns: 1fr 150px 1fr; align-items: center; gap: 16px; text-align: center; }
+    .station-name { font-family: "SimHei", "黑体", "Heiti SC", sans-serif; font-size: 50px; line-height: 1; font-weight: 500; white-space: nowrap; }
+    .station-name.name-4 { font-size: 43px; letter-spacing: -.04em; }
+    .station-name small { margin-left: 5px; font-size: 34px; }
+    .pinyin { margin-top: 10px; font-family: "Microsoft YaHei", sans-serif; font-size: 24px; font-weight: 400; }
+    .train-no { font-family: "SimHei", "黑体", "Heiti SC", sans-serif; font-size: 48px; line-height: 1; font-weight: 500; }
+    .arrow { position: relative; height: 4px; margin: 15px 0 0; background: #291e1e; }
+    .arrow::after { content: ""; position: absolute; right: -1px; top: -7px; border-left: 18px solid #291e1e; border-top: 9px solid transparent; border-bottom: 9px solid transparent; }
+    .info { display: grid; grid-template-columns: 1fr auto; grid-template-rows: 46px 44px 22px; align-items: center; column-gap: 18px; }
+    .info-row { display: contents; font-size: 31px; line-height: 1; white-space: nowrap; }
+    .info-row > span:first-child { grid-column: 1; }
+    .info-row > span:last-child { grid-column: 2; }
+    .info-row:nth-child(2) > span:first-child { color: #291e1e; }
+    .unit { margin-left: 3px; font-size: 21px; }
+    .badge { display: inline-flex; width: 34px; height: 34px; margin-left: 8px; align-items: center; justify-content: center; border: 2px solid #291e1e; border-radius: 50%; color: #291e1e; font-size: 20px; vertical-align: 3px; }
+    .muted { grid-column: 1 / -1; color: rgba(41,30,30,.66); font-size: 23px; line-height: 1; }
+    .detail { display: grid; grid-template-columns: 1fr 120px; gap: 18px; align-items: center; padding-top: 16px; }
+    .idline { margin-bottom: 16px; font-size: 30px; line-height: 1.15; white-space: nowrap; }
+    .dashed { width: 500px; min-height: 74px; padding: 8px 10px; border: 2px dashed #291e1e; text-align: center; font-size: 23px; line-height: 1.4; }
+    .qr { width: 120px; height: 120px; padding: 6px; border: 4px solid #291e1e; background: #fff; transform: translate(-28px, -20px); }
+    .qr-grid { display: grid; grid-template-columns: repeat(11, 1fr); width: 100%; height: 100%; gap: 2px; }
+    .qr-grid i { background: #291e1e; }
+    .watermark { position: absolute; right: 60px; bottom: 63px; color: rgba(41,30,30,.35); font-family: "Microsoft YaHei", sans-serif; font-size: 16px; letter-spacing: 2px; }
+    .code-band { position: absolute; right: 0; bottom: 0; left: 0; height: 54px; padding: 17px 50px 0; color: #1f5f6b; background: #5fbdc9; font: 27px/1 Consolas, "Courier New", monospace; letter-spacing: 2px; }
+    .disclaimer { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <h1>旅程记录 · 票面结构 Demo</h1>
+  <p class="note">参考开源中国铁路行程信息提示生成器的字段层级；当前为个人纪念票视觉稿，不是官方票证，也不生成可乘车凭证。</p>
+  <div class="stage"><div class="ticket-list" id="ticketList"></div></div>
+  <p class="disclaimer">设计重点：宋体正文 + 黑体站名/车次；数字大、单位小；信息区每一行拥有独立高度，避免中文字体回退造成重叠；二维码为装饰性行程码。</p>
+  <script>
+    const routes = [['福鼎', '福州南', 'FUDING', 'Fuzhounan'], ['福州南', '武夷山北', 'FUZHOUNAN', 'Wuyishanbei'], ['武夷山北', '福鼎', 'WUYISHANBEI', 'Fuding']];
+    const displayName = name => name.length === 2 ? `${name[0]}　${name[1]}` : name;
+    const ticketList = document.getElementById('ticketList');
+    ticketList.innerHTML = routes.map(([from, to, fromPy, toPy], index) => `<div class="ticket">
+      <div class="meta"><div class="serial">E96868${index + 2}</div><div class="gate">检票：--</div></div>
+      <div class="route"><div class="station"><div class="station-name name-${from.length}">${displayName(from)}<small>站</small></div><div class="pinyin">${fromPy}</div></div><div><div class="train-no">D3219</div><div class="arrow"></div></div><div class="station"><div class="station-name name-${to.length}">${displayName(to)}<small>站</small></div><div class="pinyin">${toPy}</div></div></div>
+      <div class="info"><div class="info-row"><span>2026<span class="unit">年</span>08<span class="unit">月</span>24<span class="unit">日</span>09:42<span class="unit">开</span></span><span>10<span class="unit">车</span>05D<span class="unit">号</span></span></div><div class="info-row"><span>￥46.0<span class="unit">元</span><span class="badge">惠</span></span><span>二等座</span></div><div class="muted">仅供纪念使用</div></div>
+      <div class="detail"><div><div class="idline">3509**********0011　任陈烨</div><div class="dashed">买票请到12306　发货请到95306<br>中国铁路祝您旅途愉快</div></div><div class="qr" aria-label="装饰性二维码"><div class="qr-grid"></div></div></div>
+      <div class="watermark">纪念票 · 非有效车票</div><div class="code-band">FDS0008001${index + 2}408LM8C5JM</div>
+    </div>`).join('');
+    document.querySelectorAll('.qr-grid').forEach(grid => {
+      const finder = new Set();
+      for (const [ox, oy] of [[0, 0], [6, 0], [0, 6]]) for (let y = 0; y < 5; y++) for (let x = 0; x < 5; x++) if (x === 0 || y === 0 || x === 4 || y === 4 || (x >= 1 && x <= 3 && y >= 1 && y <= 3)) finder.add(`${ox + x},${oy + y}`);
+      for (let y = 0; y < 11; y++) for (let x = 0; x < 11; x++) { const cell = document.createElement('i'); cell.style.opacity = finder.has(`${x},${y}`) || ((x * 13 + y * 7 + x * y) % 5 < 2) ? '1' : '0'; grid.appendChild(cell); }
+    });
+  </script>
+</body>
+</html>

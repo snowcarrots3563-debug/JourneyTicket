@@ -1,0 +1,21 @@
+# Android / Gradle build outputs
+.gradle/
+**/build/
+local.properties
+
+# IDE metadata
+.idea/
+*.iml
+
+# Local staging and generated archives
+.theme-stage/
+*.zip
+
+# Test captures and generated visual artifacts
+*.png
+*.jpg
+*.jpeg
+
+# OS metadata
+.DS_Store
+Thumbs.db
