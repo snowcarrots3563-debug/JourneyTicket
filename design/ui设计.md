@@ -41,9 +41,9 @@
 
 ## Demo
 
-- 识图页：[ui-design-v0.5.2-capture-demo.html](C:/Users/fdcx/Documents/ChatGPT/旅行项目/ui-design-v0.5.2-capture-demo.html)
-- 确认页：[ui-design-v0.5.2-confirm-demo.html](C:/Users/fdcx/Documents/ChatGPT/旅行项目/ui-design-v0.5.2-confirm-demo.html)
-- 旅途页：[ui-design-v0.5.2-timeline-demo.html](C:/Users/fdcx/Documents/ChatGPT/旅行项目/ui-design-v0.5.2-timeline-demo.html)
+- 识图页：[ui-design-v0.5.2-capture-demo.html](ui-design-v0.5.2-capture-demo.html)
+- 确认页：[ui-design-v0.5.2-confirm-demo.html](ui-design-v0.5.2-confirm-demo.html)
+- 旅途页：[ui-design-v0.5.2-timeline-demo.html](ui-design-v0.5.2-timeline-demo.html)
 
 确认页 Demo 中点击「行程信息」卡片即可展开和编辑全部字段。
 

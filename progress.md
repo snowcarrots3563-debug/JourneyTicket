@@ -29,7 +29,7 @@
 - 洛川修复 `TicketRendererImpl.kt` 的 Paint 字号二次缩放问题，并新增 `RenderTextSizingTest.kt`。
 - 全新 APK `assembleDebug` 成功并安装到 `JourneyTicketTest` 模拟器。
 - 从首页重新选择用户车票截图，重新 OCR 后生成全新纪念票；福鼎 → 宁德、D3219 等字段可读，长中文不再巨字覆盖或溢出，右下角合规水印保留。
-- 新生成截图：`new-generated-fixed.png`；旧已存档记录仍保留旧缓存图，未用旧缓存图作为修复结论。
+- 新生成截图：`artifacts/screenshots/new-generated-fixed.png`；旧已存档记录仍保留旧缓存图，未用旧缓存图作为修复结论。
 - 单元测试仍受既有 Gradle 测试类加载问题阻断（`ClassNotFoundException`），APK 构建与模拟器视觉回归通过。
 
 ## 0.5.1 票面结构同步与发布（2026-08-29）
@@ -40,5 +40,5 @@
 - APK 安装到 `emulator-5554` 成功，启动成功；包信息确认 `versionCode=15`、`versionName=0.5.1`，未发现新的 `AndroidRuntime/FATAL EXCEPTION`。
 - 已创建发布目录：`E:\claude work place\旅程记录\JourneyTicket V0.5.1`，包含 APK、源码快照、项目文档和票面 HTML Demo。
 - 0.5.1 模拟器回归：安装到 `emulator-5554` 成功；首页显示“开始记录/我的旅途/设置”；进入“开始记录”显示“识别车票”和“上传车票”；打开上传入口后“拍照上传/相册上传”均可见；未发现新的 `FATAL EXCEPTION`。
-- 回归截图：`v0.5.1-emulator-home.png`、`v0.5.1-emulator-recognize.png`、`v0.5.1-emulator-upload.png`。
+- 回归截图：`artifacts/screenshots/v0.5.1-emulator-home.png`、`artifacts/screenshots/v0.5.1-emulator-recognize.png`、`artifacts/screenshots/v0.5.1-emulator-upload.png`。
 - 生成票面回归发现：Android 生成图与 HTML Demo 不一致，仍出现旧版列车背景、较大二维码、旧身份信息排版和旧底部码格式；生成页面流程本身可达，但票面一致性判定失败，不能作为 0.5.1 最终通过依据。

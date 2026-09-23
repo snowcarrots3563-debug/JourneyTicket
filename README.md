@@ -17,7 +17,7 @@ JourneyTicket 是一款 Android 旅行票据管理应用，帮助用户识别、
 ## 目录说明
 
 ```text
-code-backup-before-five-demo-ui/
+archive/code-backup-before-five-demo-ui/
 └── app/src/main/java/com/journeyticket/ui/
     ├── capture/       # 票据采集
     ├── confirm/       # 信息确认
@@ -29,7 +29,7 @@ code-backup-before-five-demo-ui/
     └── timeline/      # 行程时间线
 ```
 
-根目录中的 HTML 文件是各版本的界面演示稿，Markdown 文件记录设计决策、开发进度和交接事项。
+设计说明与 HTML 演示稿位于 design/，暂停交接记录位于 docs/handoffs/；本地截图与测试图片按类型放在 artifacts/。archive/ 保存旧源码备份。
 
 ## 技术方向
 
