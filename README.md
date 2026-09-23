@@ -1,46 +1,91 @@
 # JourneyTicket
 
-JourneyTicket 是一款 Android 旅行票据管理应用，帮助用户识别、整理和回顾旅途中的车票信息。
+JourneyTicket 是一款 Android 旅行票据管理应用，用来识别车票、整理行程，并生成可保存的纪念票面。
 
-## 当前能力
+## 功能
 
-- 票据图片选择与识别流程
-- 票据信息确认与编辑
-- 行程时间线展示
-- 票面预览与个性化视觉设计
-- 设置页面与主题样式
+- 拍摄或从相册导入车票图片，支持单张和批量识别。
+- 使用设备端中文 OCR，或在设置中配置兼容 OpenAI API 的视觉模型。
+- 检查并编辑识别结果，将车票保存到行程时间线。
+- 管理常用乘车人信息，减少重复填写。
+- 预览并导出纪念票图片，支持二维码生成。
+- 按行程归档记录，并检测重复车票。
 
-## 项目状态
+本地 OCR 在设备上识别图片。选择远程视觉模型时，车票图片会发送到你配置的 API 服务；应用不会自带 API 服务或密钥。
 
-当前仓库保存的是 JourneyTicket 的 UI 开发源码快照和交互演示稿，仍处于持续开发阶段。Android 工程的完整 Gradle 配置和业务数据层尚未整理到本仓库中，因此暂不能直接通过本仓库构建 APK。
+## 技术栈
 
-## 目录说明
+- Kotlin、Jetpack Compose、Material 3
+- Android Gradle Plugin 8.7.3、Kotlin 2.0.21、Gradle 8.9
+- Room、DataStore、Hilt、Navigation Compose
+- CameraX、ML Kit 中文文字识别
+- Retrofit、OkHttp、kotlinx.serialization
 
-```text
-archive/code-backup-before-five-demo-ui/
-└── app/src/main/java/com/journeyticket/ui/
-    ├── capture/       # 票据采集
-    ├── confirm/       # 信息确认
-    ├── home/          # 首页
-    ├── navigation/    # 页面导航
-    ├── preview/       # 票面预览
-    ├── settings/      # 设置
-    ├── theme/         # 主题与颜色
-    └── timeline/      # 行程时间线
+## 环境要求
+
+- Android Studio，或安装 Android SDK 的本地开发环境
+- JDK 17
+- Android SDK Platform 35
+- 最低支持 Android 10（API 29）
+
+Gradle Wrapper 会使用仓库配置下载 Gradle 8.9。首次构建还需要联网下载 Android Gradle Plugin 和依赖。
+
+## 构建与运行
+
+Windows PowerShell：
+
+```powershell
+.\gradlew.bat assembleDebug
+.\gradlew.bat installDebug
 ```
 
-设计说明与 HTML 演示稿位于 design/，暂停交接记录位于 docs/handoffs/；本地截图与测试图片按类型放在 artifacts/。archive/ 保存旧源码备份。
+macOS 或 Linux：
 
-## 技术方向
+```bash
+./gradlew assembleDebug
+./gradlew installDebug
+```
 
-- Kotlin
-- Jetpack Compose
-- Material 3
+Debug APK 输出路径：
 
-## 开发说明
+```text
+app/build/outputs/apk/debug/app-debug.apk
+```
 
-后续整理完整 Android 工程时，建议补充 `settings.gradle.kts`、模块级 `build.gradle.kts`、AndroidManifest 和资源目录，再接入真实的 OCR 与本地数据存储。
+运行 JVM 单元测试：
 
-## License
+```powershell
+.\gradlew.bat testDebugUnitTest
+```
 
-项目许可证尚未确定。
+macOS 或 Linux 将命令替换为 `./gradlew testDebugUnitTest`。
+
+## 目录结构
+
+```text
+.
+├── app/                       # Android 应用模块
+│   └── src/
+│       ├── main/java/com/journeyticket/
+│       │   ├── camera/        # 拍摄、选图与图像预处理
+│       │   ├── data/          # 本地数据、识别服务与仓库
+│       │   ├── di/            # 依赖注入
+│       │   ├── domain/        # 领域模型与业务用例
+│       │   ├── render/        # 票面绘制与图片导出
+│       │   ├── ui/            # Compose 页面
+│       │   └── util/          # 通用工具
+│       └── test/              # JVM 单元测试
+├── design/                    # 设计说明与 HTML 演示稿
+├── docs/
+│   ├── handoffs/              # 开发交接记录
+│   └── maestro/               # Maestro 自动化相关资料
+├── artifacts/
+│   ├── screenshots/           # 项目截图
+│   └── test-inputs/           # 测试输入文件
+├── archive/                   # 历史源码备份
+└── gradle/                    # Gradle Wrapper 与依赖版本目录
+```
+
+## 许可证
+
+仓库目前未附许可证。使用或再分发前，请先与项目维护者确认授权。
